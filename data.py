@@ -1,6 +1,7 @@
 from ucimlrepo import fetch_ucirepo
 import pandas as pd
 from pathlib import Path
+from sklearn.cluster import KMeans
 
 heart_disease = fetch_ucirepo(id=45) 
 X:pd.DataFrame = heart_disease.data.features 
@@ -34,29 +35,32 @@ X = X[X['thal'].notna()]
 Y = X['num']
 X = X.drop('num',axis=1)
 l = len(X)
+
 def divide(i):
     return int(i*0.8)
+
 x_train, x_test = X.head(l-divide(l)),X.tail(divide(l))
 y_train, y_test = Y.head(l-divide(l)),Y.tail(divide(l))
 x_train.to_csv("data/raw/xtrain",index=False)
 x_test.to_csv("data/raw/xtest",index=False)
 y_train.to_csv("data/raw/ytrain",index=False)
 y_test.to_csv("data/raw/ytest",index=False)
-print(len(x_train))
-print(len(pd.read_csv("data/raw/xtrain")))
+
+print("train size:",len(x_train))
+
 #processed data
-'''buckets for ints:TODO
-def perc_cat(x):
-    if x<0.25:
-        return 0
-    if x<0.5:
-        return 1
-    if x<0.75:
-        return 2
-    return 3
-
-X['Percentile Rank'] = X.age.rank(pct = True)
-X = X.pop('age')'''
-
-
+def bucket(X,bucket_num,feat_name):
+    feat = X[feat_name].to_frame()
+    kmeans = KMeans(n_clusters=bucket_num).fit(feat.values)
+    X[feat_name] = X[feat_name].apply(lambda x:kmeans.predict([[x]])[0])
+    
+bucket(X,10,'age')
+bucket(X,5,'trestbps')
+bucket(X,5,'chol')
+x_train, x_test = X.head(l-divide(l)),X.tail(divide(l))
+y_train, y_test = Y.head(l-divide(l)),Y.tail(divide(l))
+x_train.to_csv("data/processed/xtrain",index=False)
+x_test.to_csv("data/processed/xtest",index=False)
+y_train.to_csv("data/processed/ytrain",index=False)
+y_test.to_csv("data/processed/ytest",index=False)
 

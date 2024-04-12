@@ -34,8 +34,10 @@ X = X[X['thal'].notna()]
 Y = X['num']
 X = X.drop('num',axis=1)
 l = len(X)
-x_train, x_test = X.head(l-l//8),X.tail(l//8)
-y_train, y_test = Y.head(l-l//8),Y.tail(l//8)
+def divide(i):
+    return int(i*0.8)
+x_train, x_test = X.head(l-divide(l)),X.tail(divide(l))
+y_train, y_test = Y.head(l-divide(l)),Y.tail(divide(l))
 x_train.to_csv("data/raw/xtrain",index=False)
 x_test.to_csv("data/raw/xtest",index=False)
 y_train.to_csv("data/raw/ytrain",index=False)
@@ -43,7 +45,7 @@ y_test.to_csv("data/raw/ytest",index=False)
 print(len(x_train))
 print(len(pd.read_csv("data/raw/xtrain")))
 #processed data
-'''buckets:TODO
+'''buckets for ints:TODO
 def perc_cat(x):
     if x<0.25:
         return 0

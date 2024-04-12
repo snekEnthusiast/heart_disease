@@ -4,13 +4,13 @@ ucimlrepo \
 tensorflow \
 pandas \
 pathlib
+>pip install ucimlrepo tensorflow pandas pathlib
 ## setup
-run data.py before createmodel to download data
+run data.py before createmodel to download data \
+data with missing (NaN) values will be ignored
 ## other
-training/test division is 8/2
-\
-*models* folder contains pretrained models, with names representing their auc metric
-\
+training/test division is 8/2 \
+*models* folder contains pretrained models, with names representing their auc metric \
 *data.py* contains a description of features
 ## TODO
 preprocess data to bucket age, blood pressure, cholesterol

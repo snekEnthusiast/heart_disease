@@ -18,8 +18,11 @@ model.compile(optimizer='adam',
 				loss=tf.keras.losses.BinaryCrossentropy(from_logits=True),
 				metrics=['accuracy',tf.keras.metrics.AUC()])
 #train
-model.fit(x_train, y_train, epochs=10, batch_size=2,verbose=1)
+model.fit(x_train, y_train, epochs=50, batch_size=50,verbose=1)
 #test
 model.evaluate(x_test,  y_test, verbose=2)
 #save
-model.save('model.keras')
+print("save? [name/n]")
+action = input()
+if action != "n":
+	model.save("models/"+action+'.keras')

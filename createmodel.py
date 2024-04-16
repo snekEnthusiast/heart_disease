@@ -5,18 +5,18 @@ def main(interface=True):
 	#data
 	x_train, x_test, y_train, y_test = 0,0,0,0
 	source = "data/raw/"
-	def load():
-		global x_train, x_test, y_train, y_test,source
+	def load(source):
 		x_train, x_test = pd.read_csv(source+"xtrain"),pd.read_csv(source+"xtest")
 		y_train, y_test = pd.read_csv(source+"ytrain"),pd.read_csv(source+"ytest")
+		return x_train, x_test, y_train, y_test
 
 	try:
-		load()
+		x_train, x_test, y_train, y_test = load(source)
 	except:
 		#in case the user can't read
 		import data
 		data.main()
-		load()
+		x_train, x_test, y_train, y_test = load(source)
 
 	x_train = tf.convert_to_tensor(x_train)
 	normalizer = tf.keras.layers.Normalization(axis=-1)

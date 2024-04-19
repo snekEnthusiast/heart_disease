@@ -25,6 +25,7 @@ def main(interface=True):
 	model = tf.keras.models.Sequential([
 		normalizer,
 		tf.keras.layers.Dense(10, activation='relu'),
+		tf.keras.layers.Dense(20, activation='relu'),
 		tf.keras.layers.Dense(10, activation='relu'),
 		tf.keras.layers.Dense(1)
 	])
@@ -32,7 +33,7 @@ def main(interface=True):
 					loss=tf.keras.losses.BinaryCrossentropy(from_logits=True),
 					metrics=['accuracy',tf.keras.metrics.AUC()])
 	#train
-	model.fit(x_train, y_train, epochs=50, batch_size=1,verbose=1)
+	model.fit(x_train, y_train, epochs=7, batch_size=1,verbose=1,validation_split=0.25)
 	#test
 	model.evaluate(x_test,  y_test, verbose=2)
 	#save

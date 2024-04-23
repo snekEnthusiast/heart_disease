@@ -1,10 +1,12 @@
 def main(interface=True):
 	import pandas as pd
-	import tensorflow as tf
+	from sklearn.linear_model import LogisticRegression
+	from sklearn.metrics import roc_auc_score
+	import joblib
 
 	#data
 	x_train, x_test, y_train, y_test = 0,0,0,0
-	source = "data/raw/"
+	source = "data/"
 	def load(source):
 		x_train, x_test = pd.read_csv(source+"xtrain"),pd.read_csv(source+"xtest")
 		y_train, y_test = pd.read_csv(source+"ytrain"),pd.read_csv(source+"ytest")
@@ -17,33 +19,20 @@ def main(interface=True):
 		import data
 		data.main()
 		x_train, x_test, y_train, y_test = load(source)
+	
+	log_reg = LogisticRegression(random_state=42,max_iter=10000)
+	log_reg.fit(x_train,y_train.values.ravel())
+	auc = roc_auc_score(log_reg.predict(x_test),y_test)
+	print('AUC :',auc)
 
-	x_train = tf.convert_to_tensor(x_train)
-	normalizer = tf.keras.layers.Normalization(axis=-1)
-	normalizer.adapt(x_train)
-	#define
-	model = tf.keras.models.Sequential([
-		normalizer,
-		tf.keras.layers.Dense(10, activation='relu'),
-		tf.keras.layers.Dense(20, activation='relu'),
-		tf.keras.layers.Dense(10, activation='relu'),
-		tf.keras.layers.Dense(1)
-	])
-	model.compile(optimizer='adam',	
-					loss=tf.keras.losses.BinaryCrossentropy(from_logits=True),
-					metrics=['accuracy',tf.keras.metrics.AUC()])
-	#train
-	model.fit(x_train, y_train, epochs=7, batch_size=1,verbose=1,validation_split=0.25)
-	#test
-	model.evaluate(x_test,  y_test, verbose=2)
-	#save
-	if(interface):
-		print("save? [name/n]: ",end="")
-		action = input()
-		if not action in ["n","N",""]:
-			model.save("models/"+action+'.keras')
+	if interface:
+		inp = input("save model? [(name)/n]")
+		if not inp in ['','n','N']:
+			#save
+			joblib.dump(log_reg, inp+".joblib.pkl")
 	else:
-		model.save("models/model.keras")
+		joblib.dump(log_reg,"model.joblib.pkl")
+
 
 if __name__ == '__main__':
 	main()

@@ -4,8 +4,9 @@ pandas \
 numpy \
 sklearn \
 pathlib \
-zipfile
->pip install pandas numpy sklearn pathlib zipfile
+zipfile \
+joblib
+>pip install pandas numpy sklearn pathlib zipfile joblib
 ## setup
 run data.py before createmodel.py to download data \
 or simply use the pipeline tool
